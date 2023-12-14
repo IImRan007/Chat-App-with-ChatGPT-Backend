@@ -40,7 +40,6 @@ const createConversation = asyncHandler(async (req, res) => {
 // GET /api/conversation/:id
 const getConversation = asyncHandler(async (req, res) => {
   const conversationId = req?.params?.id;
-  console.log(conversationId);
 
   if (!conversationId) {
     res.status(400);

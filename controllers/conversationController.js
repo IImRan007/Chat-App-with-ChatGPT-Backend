@@ -56,6 +56,40 @@ const getConversation = asyncHandler(async (req, res) => {
   res.status(200).json({ data: conversation, success: true });
 });
 
+// PUT /api/conversation/:id
+const updateConversationTitle = asyncHandler(async (req, res) => {
+  const { title } = req?.body;
+
+  if (!title) {
+    res.status(400);
+    throw new Error("Title is requried.");
+  }
+
+  const conversationId = req?.params?.id;
+
+  if (!conversationId) {
+    res.status(400);
+    throw new Error("Please provide the conversation ID.");
+  }
+
+  const conversation = await Conversation.findByIdAndUpdate(
+    conversationId,
+    {
+      title: title,
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!conversation) {
+    res.status(404);
+    throw new Error("Conversation not found!");
+  }
+
+  res.status(200).json({ conversation, success: true });
+});
+
 // DELETE /api/conversation/:id
 const deleteConversation = asyncHandler(async (req, res) => {
   const conversationId = req?.params?.id;
@@ -77,4 +111,9 @@ const deleteConversation = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true });
 });
 
-module.exports = { createConversation, getConversation, deleteConversation };
+module.exports = {
+  createConversation,
+  getConversation,
+  updateConversationTitle,
+  deleteConversation,
+};

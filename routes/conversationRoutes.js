@@ -4,9 +4,14 @@ const {
   createConversation,
   getConversation,
   deleteConversation,
+  updateConversationTitle,
 } = require("../controllers/conversationController");
 
 router.post("/", createConversation);
-router.route("/:id").get(getConversation).delete(deleteConversation);
+router
+  .route("/:id")
+  .get(getConversation)
+  .put(updateConversationTitle)
+  .delete(deleteConversation);
 
 module.exports = router;

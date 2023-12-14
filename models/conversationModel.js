@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema(
   {
-    text: {
+    role: {
       type: String,
-      required: true,
+    },
+    content: {
+      type: String,
     },
   },
   { _id: false, timestamps: true } // To avoid auto-generating separate _id for each message

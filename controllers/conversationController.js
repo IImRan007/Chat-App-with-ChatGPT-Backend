@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const OpenAI = require("openai");
 
 const Conversation = require("../models/conversationModel");
 const User = require("../models/userModel");
@@ -20,20 +21,51 @@ const createConversation = asyncHandler(async (req, res) => {
 
   if (!userExists) {
     res.status(400);
-    throw new Error("User not exists!");
+    throw new Error("User does not exist!");
   }
 
-  const conversation = await Conversation.create({
-    userId,
-    title,
-    messages,
+  // Set up and make a request to the OpenAI API
+  const openai = new OpenAI({
+    apiKey: process.env["OPENAI_KEY"],
   });
+
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [{ role: "user", content: messages[0].text }],
+    model: "gpt-3.5-turbo",
+  });
+
+  // Extract the response from the OpenAI API
+  const chatGptResponse = chatCompletion.choices[0]?.message?.content || "";
+
+  if (!chatGptResponse || chatGptResponse === "") {
+    res.status(400);
+    throw new Error("Internal Server Error!");
+  }
+
+  // Find an existing conversation or create a new one
+  let conversation = await Conversation.findOne({ userId, title });
+
+  if (!conversation) {
+    conversation = await Conversation.create({
+      userId,
+      title,
+      messages: [
+        { role: "user", content: messages[0].text },
+        { role: "assistant", content: chatGptResponse },
+      ],
+    });
+  } else {
+    // Append new messages to the existing conversation
+    conversation.messages.push({ role: "user", content: messages[0].text });
+    conversation.messages.push({ role: "assistant", content: chatGptResponse });
+    await conversation.save();
+  }
 
   if (conversation) {
     res.status(201).json({ data: conversation, success: true });
   } else {
     res.status(400);
-    throw new Error("Error createing new conversation!");
+    throw new Error("Error creating or updating the conversation!");
   }
 });
 

@@ -3,9 +3,10 @@ const router = express.Router();
 const {
   createConversation,
   getConversation,
+  deleteConversation,
 } = require("../controllers/conversationController");
 
 router.post("/", createConversation);
-router.get("/:id", getConversation);
+router.route("/:id").get(getConversation).delete(deleteConversation);
 
 module.exports = router;

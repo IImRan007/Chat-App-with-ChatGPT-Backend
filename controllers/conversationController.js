@@ -56,4 +56,25 @@ const getConversation = asyncHandler(async (req, res) => {
   res.status(200).json({ data: conversation, success: true });
 });
 
-module.exports = { createConversation, getConversation };
+// DELETE /api/conversation/:id
+const deleteConversation = asyncHandler(async (req, res) => {
+  const conversationId = req?.params?.id;
+
+  if (!conversationId) {
+    res.status(400);
+    throw new Error("Please provide the conversation ID.");
+  }
+
+  const conversation = await Conversation.findById(conversationId);
+
+  if (!conversation) {
+    res.status(404);
+    throw new Error("Conversation not found!");
+  }
+
+  await Conversation.deleteOne({ _id: conversationId });
+
+  res.status(200).send({ success: true });
+});
+
+module.exports = { createConversation, getConversation, deleteConversation };

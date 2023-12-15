@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use("/api", require("./routes/userRoutes"));
+app.use("/api/user", require("./routes/userRoutes"));
 app.use("/api/conversation", require("./routes/conversationRoutes"));
 
 app.get("/", (_, res) => {

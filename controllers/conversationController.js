@@ -88,6 +88,46 @@ const getConversation = asyncHandler(async (req, res) => {
   res.status(200).json({ data: conversation, success: true });
 });
 
+// GET /api/conversation/:userId
+const getUserConversation = asyncHandler(async (req, res) => {
+  const userId = req.params.userId;
+
+  if (!userId) {
+    res.status(400);
+    throw new Error("Please provide the userId.");
+  }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  const conversation = await Conversation.find({ userId: userId }).select(
+    "userId _id title"
+  );
+
+  if (!conversation || conversation.length === 0) {
+    res.status(400);
+    throw new Error("No result found!");
+  }
+
+  res.status(200).json({ conversation, success: true });
+});
+
+// GET ALL /api/conversation/all
+const getAllConversations = asyncHandler(async (req, res) => {
+  const conversations = await Conversation.find().select("userId _id title");
+
+  if (!conversations || conversations.length === 0) {
+    res.status(404);
+    throw new Error("Conversations not found!");
+  }
+
+  res.status(200).json({ data: conversations, success: true });
+});
+
 // PUT /api/conversation/:id
 const updateConversationTitle = asyncHandler(async (req, res) => {
   const { title } = req?.body;
@@ -146,6 +186,8 @@ const deleteConversation = asyncHandler(async (req, res) => {
 module.exports = {
   createConversation,
   getConversation,
+  getUserConversation,
+  getAllConversations,
   updateConversationTitle,
   deleteConversation,
 };

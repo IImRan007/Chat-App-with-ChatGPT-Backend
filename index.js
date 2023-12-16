@@ -11,8 +11,25 @@ const app = express();
 connectDb();
 
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({ extended: false }));
+const allowedOrigins = [
+  "https://chat-app-with-chat-gpt-backend.vercel.app/",
+  "http://localhost:9000",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    optionsSuccessStatus: 204,
+  })
+);
 
 // Routes
 app.use("/api/user", require("./routes/userRoutes"));

@@ -13,7 +13,7 @@ connectDb();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const allowedOrigins = [
-  "https://chat-app-with-chat-gpt-frontend.vercel.app/",
+  "https://chat-app-with-chat-gpt-frontend.vercel.app",
   "http://localhost:9000",
 ];
 

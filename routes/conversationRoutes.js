@@ -11,7 +11,7 @@ const {
 
 router.post("/", createConversation);
 router.get("/all", getAllConversations);
-router.get("/:userId", getUserConversation);
+router.get("/user/:userId", getUserConversation);
 router
   .route("/:id")
   .get(getConversation)

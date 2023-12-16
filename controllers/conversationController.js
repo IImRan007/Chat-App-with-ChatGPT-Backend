@@ -88,7 +88,7 @@ const getConversation = asyncHandler(async (req, res) => {
   res.status(200).json({ data: conversation, success: true });
 });
 
-// GET /api/conversation/:userId
+// GET /api/conversation/user/:userId
 const getUserConversation = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
 
